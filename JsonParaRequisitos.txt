@@ -1,0 +1,128 @@
+### Json Usado nas requisições 
+
+## Usuários 
+-Post: 
+{
+  "cpf": "12345678901",
+  "nome": "João da Silva",
+  "email": "joao.silva@email.com",
+  "senha": "senha_segura_123"
+}
+-Put: (http://localhost:8080/GestaoDeProjeto-1.0/api/v1/usuario/12345678901):
+{
+  "nome": "João da Silva Neto",
+  "email": "joao.silva.neto@email.com",
+  "senha": "nova_senha_segura_123"
+}
+-Post / Login:
+{
+  "cpf": "12345678901",
+  "senha": "senha_segura_123"
+}
+-Delete: (http://localhost:8080/GestaoDeProjeto-1.0/api/v1/usuario/12345678901)
+-Post / Promover: (http://localhost:8080/GestaoDeProjeto-1.0/api/v1/usuario/promover/12345678901) 
+
+## Eventos
+-Post:
+{
+  "nome": "Nome do Evento",
+  "descricao": "Descrição do evento",
+  "dt_inicio": "2024-11-25T00:00:00",
+  "dt_fim": "2024-11-30T00:00:00",
+  "numero_vagas": 100,
+  "dt_limite_inscricao": "2024-11-20T00:00:00",
+  "nome_responsavel": "Nome do Responsável",
+  "cpf_responsavel": "123.456.789-00",
+  "email_responsavel": "responsavel@dominio.com"
+}
+-Put: (http://localhost:8080/GestaoDeProjeto-1.0/api/v1/evento/2)
+{
+  "nome": "Nome do Evento Atualizado",
+  "descricao": "Descrição atualizada do evento.",
+  "dt_inicio": "2024-11-26T00:00:00",
+  "dt_fim": "2024-12-01T00:00:00",
+  "numero_vagas": 150,
+  "dt_limite_inscricao": "2024-11-22T00:00:00",
+  "nome_responsavel": "Nome do Responsável Atualizado",
+  "cpf_responsavel": "987.654.321-00",
+  "email_responsavel": "novo_responsavel@dominio.com"
+}
+-Get / Listar por datas: http://localhost:8080/GestaoDeProjeto-1.0/api/v1/evento/2024-11-01/2024-11-30
+-Get / Listar um evento: (http://localhost:8080/GestaoDeProjeto-1.0/api/v1/evento/programacao/2)
+-Get / Listar todos as palestras\minicursos do evento: (http://localhost:8080/GestaoDeProjeto-1.0/api/v1/evento/programacao/evento/2)
+-Delete: (http://localhost:8080/GestaoDeProjeto-1.0/api/v1/evento/2)
+
+## Palestras
+
+-Post: 
+{
+  "nome": "Palestra sobre Inteligência Artificial",
+  "descricao": "Uma introdução ao mundo da Inteligência Artificial e suas aplicações no cotidiano.",
+  "dt_palestra": "2024-12-15", 
+  "horario_inicio_palestra": "09:00:00",
+  "horario_fim_palestra": "12:00:00",
+  "nome_palestrante": "Dr. João Silva",
+  "minicurriculo_palestrante": "Dr. João Silva é PhD em Inteligência Artificial pela Universidade X e atua no desenvolvimento de soluções de IA há mais de 10 anos.",
+  "data_limite": "2024-12-10",
+    "id_evento": "2"
+}
+-Put: (http://localhost:8080/GestaoDeProjeto-1.0/api/v1/palestra/1)
+{
+  "id": 1,
+  "data_alt": "2024-11-25",
+  "nome": "Palestra sobre Big Data",
+  "descricao": "Explorando o impacto de Big Data em negócios modernos.",
+  "dt_palestra": "2024-12-20",
+  "horario_inicio_palestra": "14:00:00",
+  "horario_fim_palestra": "17:00:00",
+  "nome_palestrante": "Dr. Ana Souza",
+  "minicurriculo_palestrante": "Doutora em Ciência de Dados pela Universidade Y, com 15 anos de experiência.",
+  "data_limite": "2024-12-15"
+}
+-Delete: (http://localhost:8080/GestaoDeProjeto-1.0/api/v1/palestra/1)
+
+## Mini Cursos
+-Post: 
+{
+  "nome": "Introdução ao Java",
+  "descricao": "MiniCurso sobre os fundamentos da linguagem c.",
+  "dt_minicurso": "2024-11-25",
+   "horario_inicio_minicurso": "10:30:00",
+  "horario_fim_minicurso": "10:30:00",
+  "nome_instrutor": "Carlos Silva",
+  "minicurriculo_instrutor": "Carlos é instrutor de Java com mais de 10 anos de experiência no mercado.",
+  "numero_vagas": 30,
+  "dt_limite_inscricao": "2024-11-20"
+}
+-Put: (http://localhost:8080/GestaoDeProjeto-1.0/api/v1/minicurso/1)
+{
+    "nome": "Introdução ao Java Avançado",
+    "descricao": "MiniCurso avançado sobre Java com práticas de mercado.",
+    "dt_minicurso": "2024-12-10",
+    "horario_inicio_minicurso": "10:00:00",
+    "horario_fim_minicurso": "14:00:00",
+    "nome_instrutor": "Ana Clara",
+    "minicurriculo_instrutor": "Ana é especialista em Java com 15 anos de experiência.",
+    "numero_vagas": 20,
+    "dt_limite_inscricao": "2024-12-05"
+  }
+-Delete: (http://localhost:8080/GestaoDeProjeto-1.0/api/v1/minicurso/1)
+
+## Inscrição Evento
+-Post: http://localhost:8080/GestaoDeProjeto-1.0/api/v1/inscricao/evento/1
+{
+  "cpf_usuario": "12345678901",
+  "data_inscricao": "2024-11-25T14:45:00"
+}
+-Get:  (http://localhost:8080/GestaoDeProjeto-1.0/api/v1/inscricao/evento/1)
+-Delete: (http://localhost:8080/GestaoDeProjeto-1.0/api/v1/inscricao/evento/12345678901)
+
+## Inscrição Mini Curso 
+-Post: http://localhost:8080/GestaoDeProjeto-1.0/api/v1/inscricao/minicurso/1
+{
+  "cpf_usuario": "12345678901",
+  "data_inscricao": "2024-11-25T14:45:00"
+}
+-Get:  (http://localhost:8080/GestaoDeProjeto-1.0/api/v1/inscricao/minicurso/1)
+-Delete: (http://localhost:8080/GestaoDeProjeto-1.0/api/v1/inscricao/minicurso/12345678901)
+
