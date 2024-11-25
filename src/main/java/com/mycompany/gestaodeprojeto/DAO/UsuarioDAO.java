@@ -184,43 +184,44 @@ public class UsuarioDAO {
            
     }
     
-    public boolean removerUsuario(String cpf){
+    public boolean removerUsuario(String cpf) {
+    if (removerInscricoes(cpf)) {
         String sql = "DELETE FROM usuario WHERE cpf = ?";
         
-        
-        Connection conn = null;
-        PreparedStatement stm = null;
-        
-        try{
-            conn = ConnDao.conn();
-            
-            stm = conn.prepareStatement(sql);
+        try (Connection conn = ConnDao.conn();
+             PreparedStatement stm = conn.prepareStatement(sql)) {
             
             stm.setString(1, cpf);
             
             int result = stm.executeUpdate();
-            
-            if(result == 1){
-               System.out.println("Deletado com sucesso"); 
-               return true;
-            }else{
-                System.out.println("nao com sucesso");
-                return false;
-                }
-            
-            }catch(SQLException e){
-            System.out.println("Nao foi possivel salvar, tem Email ou CPF igual "+ e.getMessage());
-            
-        }finally {
-        try {
-            if (stm != null) stm.close();
-            if (conn != null) conn.close();
+            return result == 1;
         } catch (SQLException e) {
-            System.out.println("Erro ao fechar a conexão: " + e.getMessage());
+            System.out.println("Erro ao deletar usuário: " + e.getMessage());
+            return false;
         }
-    }
+    } else {
+        System.out.println("Erro ao remover as inscrições do usuário.");
         return false;
+    }
 }
+
+    //aq foi gpt msm
+public boolean removerInscricoes(String cpf) {
+    String sql = "DELETE FROM inscricao WHERE cpf_usuario = ?";
+    
+    try (Connection conn = ConnDao.conn();
+         PreparedStatement stm = conn.prepareStatement(sql)) {
+        
+        stm.setString(1, cpf);
+        
+        int result = stm.executeUpdate();
+        return result >= 0;  
+    } catch (SQLException e) {
+        System.out.println("Erro ao remover inscrições: " + e.getMessage());
+        return false;
+    }
+}
+
     
 
      

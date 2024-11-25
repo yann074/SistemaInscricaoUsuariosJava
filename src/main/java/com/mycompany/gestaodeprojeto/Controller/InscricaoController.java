@@ -21,8 +21,8 @@ public class InscricaoController {
         this.inscricaoDAO = new InscricaoDAO();
     }
     
-    public boolean salvarInscricao(InscricaoModel inscrito, int id_evento, Timestamp data_atl){
-        return inscricaoDAO.salvarInscricao(inscrito,id_evento, data_atl);
+    public boolean salvarInscricao(InscricaoModel inscrito, int id_evento){
+        return inscricaoDAO.salvarInscricao(inscrito,id_evento);
     }
     
     public boolean removerInscricaoEvento(InscricaoModel inscritos, String cpf_usuario){

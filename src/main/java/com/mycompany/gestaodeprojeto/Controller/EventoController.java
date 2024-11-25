@@ -35,9 +35,9 @@ public class EventoController {
         }
     }
 
-    public boolean atualizarEvento(EventoModel evento, int id, Timestamp data_alt) {
+    public boolean atualizarEvento(EventoModel evento, int id) {
         if (evento != null && id > 0) {
-            return eventoDAO.atualizarEvento(evento, id, data_alt);
+            return eventoDAO.atualizarEvento(evento, id);
         } else {
             System.out.println("Dados inválidos para atualização");
             return false;
@@ -47,6 +47,15 @@ public class EventoController {
     public List<EventoModel> listarProgramacaoEvento(int id) {
         if (id > 0) {
             return eventoDAO.listarProgramacaoEvento(id);
+        } else {
+            System.out.println("ID inválido");
+            return null;
+        }
+    }
+    
+        public List<EventoModel> listarEventoComPalestraEMiniCurso(int id) {
+        if (id > 0) {
+            return eventoDAO.listarEventoComPalestraEMiniCurso(id);
         } else {
             System.out.println("ID inválido");
             return null;

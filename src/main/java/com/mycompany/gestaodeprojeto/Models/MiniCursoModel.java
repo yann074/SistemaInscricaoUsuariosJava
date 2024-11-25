@@ -1,17 +1,32 @@
 package com.mycompany.gestaodeprojeto.Models;
 
+import java.sql.Time;
 import java.util.Date;
 
 public class MiniCursoModel {
     private int id;
-    private String nome_minicurso;
-    private String descricao_minicurso;
-    private Date data_inic_minicurso;
-    private Date data_fim_minicurso;
-    private int vagas_disp_minicurso;
-    private Date data_limite_minicurso; // Alterado para LocalDateTime
+    private String nome;
+    private String descricao;
+    private Date dt_minicurso;
+    private Time horario_inicio_minicurso;
+    private Time horario_fim_minicurso;
+    private String nome_instrutor;
+    private String minicurriculo_instrutor;
+    private int numero_vagas;
+    private Date dt_limite_inscricao; 
+    private int id_evento;
 
-    // Getters e Setters
+    public int getId_evento() {
+        return id_evento;
+    }
+
+    public void setId_evento(int id_evento) {
+        this.id_evento = id_evento;
+    }
+
+    public MiniCursoModel() {
+    }
+
     public int getId() {
         return id;
     }
@@ -20,51 +35,77 @@ public class MiniCursoModel {
         this.id = id;
     }
 
-    public String getNome_minicurso() {
-        return nome_minicurso;
+    public String getNome() {
+        return nome;
     }
 
-    public void setNome_minicurso(String nome_minicurso) {
-        this.nome_minicurso = nome_minicurso;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
-    public String getDescricao_minicurso() {
-        return descricao_minicurso;
+    public String getDescricao() {
+        return descricao;
     }
 
-    public void setDescricao_minicurso(String descricao_minicurso) {
-        this.descricao_minicurso = descricao_minicurso;
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
     }
 
-    public Date getData_inic_minicurso() {
-        return data_inic_minicurso;
+    public Date getDt_minicurso() {
+        return dt_minicurso;
     }
 
-    public void setData_inic_minicurso(Date data_inic_minicurso) {
-        this.data_inic_minicurso = data_inic_minicurso;
+    public void setDt_minicurso(Date dt_minicurso) {
+        this.dt_minicurso = dt_minicurso;
     }
 
-    public Date getData_fim_minicurso() {
-        return data_fim_minicurso;
+    public Time getHorario_inicio_minicurso() {
+        return horario_inicio_minicurso;
     }
 
-    public void setData_fim_minicurso(Date data_fim_minicurso) {
-        this.data_fim_minicurso = data_fim_minicurso;
+    public void setHorario_inicio_minicurso(Time horario_inicio_minicurso) {
+        this.horario_inicio_minicurso = horario_inicio_minicurso;
     }
 
-    public int getVagas_disp_minicurso() {
-        return vagas_disp_minicurso;
+    public Time getHorario_fim_minicurso() {
+        return horario_fim_minicurso;
     }
 
-    public void setVagas_disp_minicurso(int vagas_disp_minicurso) {
-        this.vagas_disp_minicurso = vagas_disp_minicurso;
+    public void setHorario_fim_minicurso(Time horario_fim_minicurso) {
+        this.horario_fim_minicurso = horario_fim_minicurso;
     }
 
-    public Date getData_limite_minicurso() {
-        return data_limite_minicurso;
+    public String getNome_instrutor() {
+        return nome_instrutor;
     }
 
-    public void setData_limite_minicurso(Date data_limite_minicurso) {
-        this.data_limite_minicurso = data_limite_minicurso;
+    public void setNome_instrutor(String nome_instrutor) {
+        this.nome_instrutor = nome_instrutor;
     }
+
+    public String getMinicurriculo_instrutor() {
+        return minicurriculo_instrutor;
+    }
+
+    public void setMinicurriculo_instrutor(String minicurriculo_instrutor) {
+        this.minicurriculo_instrutor = minicurriculo_instrutor;
+    }
+
+    public int getNumero_vagas() {
+        return numero_vagas;
+    }
+
+    public void setNumero_vagas(int numero_vagas) {
+        this.numero_vagas = numero_vagas;
+    }
+
+    public Date getDt_limite_inscricao() {
+        return dt_limite_inscricao;
+    }
+
+    public void setDt_limite_inscricao(Date dt_limite_inscricao) {
+        this.dt_limite_inscricao = dt_limite_inscricao;
+    }
+
+   
 }

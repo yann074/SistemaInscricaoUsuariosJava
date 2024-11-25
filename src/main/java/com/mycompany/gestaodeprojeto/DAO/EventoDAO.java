@@ -20,36 +20,11 @@ import java.util.List;
  * @author yanns
  */
 public class EventoDAO {
-     //nome do responsável pelo evento, cpf do responsável pelo evento, e-mail do responsável pelo evento
+     //Um postamn de Teste no final desse codigo
+    
     public boolean salvarEvento(EventoModel evento){
-        String sql = "INSERT INTO evento (nome, descricao_evento, data_inic, data_fim, vagas_disp, data_limite, "
+        String sql = "INSERT INTO evento (nome, descricao, dt_inicio, dt_fim, numero_vagas, dt_limite_inscricao, "
                 + "nome_responsavel, cpf_responsavel, email_responsavel) VALUES (?,?,?,?,?,?, ?, ?, ?)";
-        
-       /* {
-  "nome": "Evento de Tecnologia",
-  "descricao_evento": "Evento sobre inovação em TI",
-  "data_inic": "2024-12-01T09:00:00",
-  "data_fim": "2024-12-01T18:00:00",
-  "vagas_disp": 100,
-  "data_limite": "2024-11-25T23:59:59",
-  "nome_responsavel": "João Silva",
-  "cpf_responsavel": "123.456.789-00",
-  "email_responsavel": "joao.silva@email.com"
-}
-        
-{
-  "nome": "FINC",
-  "dt_inicio": "21/10/2024",
-  "dt_fim": "24/10/2024",
-  "descricao": "Evento de educação do Grupo Nobre",
-  "nome_responsavel": "fulano",
-  "cpf_responsavel": "CPF de Fulano",
-  "email_responsavel": "fulano@gmail.com",
-  "numero_vagas": "1000",
-  "dt_limite_inscricao": "18/10/2024"
-}
-*/
-
         
         Connection conn = null;
         PreparedStatement stm = null;
@@ -59,20 +34,20 @@ public class EventoDAO {
             stm = conn.prepareStatement(sql);
             
             stm.setString(1, evento.getNome());
-            stm.setString(2, evento.getDescricao_evento());  
+            stm.setString(2, evento.getDescricao());
             
             //Para tratar com DateTime            
-            java.sql.Date data_inic = new java.sql.Date(evento.getData_inic().getTime());
-            java.sql.Date data_fim = new java.sql.Date(evento.getData_fim().getTime());
+            java.sql.Date data_inic = new java.sql.Date(evento.getDt_inicio().getTime());
+            java.sql.Date data_fim = new java.sql.Date(evento.getDt_fim().getTime());
             
             //para setar as datas
             stm.setDate(3, data_inic);
             stm.setDate(4, data_fim);
                         
-            stm.setInt(5, evento.getVagas_disp());
+            stm.setInt(5, evento.getNumero_vagas());
             
             //Para tratar com
-            java.sql.Date data_limite = new java.sql.Date(evento.getData_limite().getTime());
+            java.sql.Date data_limite = new java.sql.Date(evento.getDt_limite_inscricao().getTime());
             
             stm.setDate(6, data_limite);
             
@@ -98,7 +73,7 @@ public class EventoDAO {
     
     
     public List<EventoModel> listarEvento(String dataInicio, String dataFim){
-    String sql = "SELECT * FROM evento WHERE data_inic >= ? AND data_fim <= ?";
+    String sql = "SELECT * FROM evento WHERE dt_inicio >= ? AND dt_fim <= ?";
     List<EventoModel> eventos = new ArrayList<>();
     
     Connection conn = null;
@@ -118,11 +93,11 @@ public class EventoDAO {
             EventoModel evento = new EventoModel();
             
             evento.setNome(rs.getString("nome"));
-            evento.setDescricao_evento(rs.getString("descricao_evento"));
-            evento.setData_inic(rs.getTimestamp("data_inic"));
-            evento.setData_fim(rs.getTimestamp("data_fim"));
-            evento.setVagas_disp(rs.getInt("vagas_disp"));
-            evento.setData_limite(rs.getTimestamp("data_limite"));
+            evento.setDescricao(rs.getString("descricao"));
+            evento.setDt_inicio(rs.getTimestamp("dt_inicio"));
+            evento.setDt_fim(rs.getTimestamp("dt_fim"));
+            evento.setNumero_vagas(rs.getInt("numero_vagas"));
+            evento.setDt_limite_inscricao(rs.getTimestamp("dt_limite_inscricao"));
             evento.setNome_responsavel(rs.getString("nome_responsavel"));
             evento.setCpf_responsavel(rs.getString("cpf_responsavel"));
             evento.setEmail_responsavel(rs.getString("email_responsavel"));
@@ -136,141 +111,135 @@ public class EventoDAO {
 }
     
     
-    //ARRUMAAAAAAAAAAAAAAAAAA
-    
-    public List<EventoModel> listarEventoComPalestraEMiniCurso(String dataInicio, String dataFim){
+   public List<EventoModel> listarEventoComPalestraEMiniCurso(int id_evento) {
     String sql = "SELECT \n" +
 "    'mini_curso' AS tipo,\n" +
 "    mc.id AS id,\n" +
 "    mc.nome AS nome,\n" +
 "    mc.descricao AS descricao,\n" +
-"    mc.data_horario AS data_horario,\n" +
-"    mc.duracao AS duracao,\n" +
+"    mc.dt_minicurso AS dt_minicurso,\n" +
+"    mc.nome_instrutor AS nome_instrutor,\n" +
 "    e.nome AS nome_evento\n" +
 "FROM \n" +
 "    mini_curso mc\n" +
 "INNER JOIN \n" +
 "    evento e ON mc.id_evento = e.id\n" +
 "WHERE \n" +
-"    e.id = :id_evento\n" +
-"\n" +
+"    e.id = ?\n" +
 "UNION ALL\n" +
-"\n" +
 "SELECT \n" +
 "    'palestra' AS tipo,\n" +
 "    p.id AS id,\n" +
 "    p.nome AS nome,\n" +
 "    p.descricao AS descricao,\n" +
-"    p.data_horario AS data_horario,\n" +
-"    p.duracao AS duracao,\n" +
+"    p.dt_palestra AS dt_palestra,\n" +
+"    p.data_limite AS data_limite,\n" +
 "    e.nome AS nome_evento\n" +
 "FROM \n" +
 "    palestra p\n" +
 "INNER JOIN \n" +
 "    evento e ON p.id_evento = e.id\n" +
 "WHERE \n" +
-"    e.id = :id_evento;";
+"    e.id = ?;"; // Aqui também usa um único "?" para o parâmetro
+
     List<EventoModel> eventos = new ArrayList<>();
-    
     Connection conn = null;
     PreparedStatement stm = null;
-    
-    try{
-        conn = ConnDao.conn();
-        stm = conn.prepareStatement(sql);
-        
-        // Definir os parâmetros de data para a consulta
-        stm.setString(1, dataInicio); // Data de início
-        stm.setString(2, dataFim);     // Data de fim
-        
-        ResultSet rs = stm.executeQuery();
-        
-        while(rs.next()){
-            EventoModel evento = new EventoModel();
-            
-            evento.setNome(rs.getString("nome"));
-            evento.setDescricao_evento(rs.getString("descricao_evento"));
-            evento.setData_inic(rs.getTimestamp("data_inic"));
-            evento.setData_fim(rs.getTimestamp("data_fim"));
-            evento.setVagas_disp(rs.getInt("vagas_disp"));
-            evento.setData_limite(rs.getTimestamp("data_limite"));
-            evento.setNome_responsavel(rs.getString("nome_responsavel"));
-            evento.setCpf_responsavel(rs.getString("cpf_responsavel"));
-            evento.setEmail_responsavel(rs.getString("email_responsavel"));
-            
-            eventos.add(evento);
-        }
-    }catch(SQLException e){
-        System.out.println("Erro: " + e);        
-    }
-    return eventos;
-}
-
-    public boolean removerEvento(int id){
-        String sql = "DELETE FROM evento WHERE id = ?";
-        
-        Connection conn = null;
-        PreparedStatement stm = null;
-        ResultSet rs = null;
-
-        try{
-            conn = ConnDao.conn();  
-
-        stm = conn.prepareStatement(sql);
-        stm.setInt(1, id);
-        int result = stm.executeUpdate();
-                
-            if (result == 1) {
-                 System.out.println("Deletado com sucesso");
-                 return true;
-             } else {
-                 System.out.println("Nenhuma linha foi deletada");
-             }
-        
-                            
-        }catch(SQLException e){
-            System.out.println("error" + e);
-        }
-        return false;
-    }
-    
-    //TESTAR
-   public boolean atualizarEvento(EventoModel evento, int id, Timestamp data_alt) {
-    String sql = "UPDATE evento SET nome = ?, descricao_evento = ?, data_inic = ?, "
-               + "data_fim = ?, vagas_disp = ?, data_limite = ?, nome_responsavel = ?, "
-               + "cpf_responsavel = ?, email_responsavel = ? WHERE id = ?";
-
-    Connection conn = null;
-    PreparedStatement stm = null;
-
-    if (data_alt == null) {
-        System.out.println("Data de alteração não pode ser nula.");
-        return false;
-    }
-
-    // A data de alteração pode ser usada diretamente se for válida
-    Timestamp data_att = new Timestamp(data_alt.getTime());
 
     try {
         conn = ConnDao.conn();
         stm = conn.prepareStatement(sql);
+        
+        stm.setInt(1, id_evento); // Primeiro parâmetro (id_evento) para a consulta da mini_curso
+        stm.setInt(2, id_evento); // Segundo parâmetro (id_evento) para a consulta da palestra
+        
+        ResultSet rs = stm.executeQuery();
+        
+        while (rs.next()) {
+            EventoModel evento = new EventoModel();
+    
+    evento.setNome(rs.getString("nome"));
+    evento.setDescricao(rs.getString("descricao"));
+    evento.setDt_inicio(rs.getDate("dt_minicurso")); 
+    evento.setDt_limite_inscricao(rs.getTimestamp("dt_minicurso"));
+    evento.setNome_responsavel(rs.getString("nome_instrutor")); 
 
-        // Configura os parâmetros da consulta
-        stm.setString(1, evento.getNome());
-        stm.setString(2, evento.getDescricao_evento());
+            eventos.add(evento);
+        }
+    } catch (SQLException e) {
+        System.out.println("Erro: " + e);
+    } finally {
+        // Fechar os recursos
+        try {
+            if (stm != null) stm.close();
+            if (conn != null) conn.close();
+        } catch (SQLException e) {
+            System.out.println("Erro ao fechar os recursos: " + e);
+        }
+    }
+    return eventos;
+}
 
-        // Para tratar com DateTime
-        java.sql.Date data_inic = new java.sql.Date(evento.getData_inic().getTime());
-        java.sql.Date data_fim = new java.sql.Date(evento.getData_fim().getTime());
 
-        // Configura as datas
-        stm.setDate(3, data_inic);
-        stm.setDate(4, data_fim);
+  public boolean removerEvento(int id) {
+    String sql = "DELETE FROM evento WHERE id = ? AND dt_inicio > NOW()";
 
-        stm.setInt(5, evento.getVagas_disp());
+    Connection conn = null;
+    PreparedStatement stm = null;
+    ResultSet rs = null;
 
-        java.sql.Date data_limite = new java.sql.Date(evento.getData_limite().getTime());
-        stm.setDate(6, data_limite);
+    try {
+        conn = ConnDao.conn();  
+
+        stm = conn.prepareStatement(sql);
+        stm.setInt(1, id);
+
+        int result = stm.executeUpdate();
+
+        if (result == 1) {
+            System.out.println("Deletado com sucesso");
+            return true;
+        } else {
+            System.out.println("Nenhuma linha foi deletada. O evento pode já ter começado.");
+        }
+
+    } catch (SQLException e) {
+        System.out.println("Erro: " + e);
+    }
+    return false;
+}
+
+    //TESTAR
+   public boolean atualizarEvento(EventoModel evento, int id) {
+    String sql = "UPDATE evento SET nome = ?, descricao = ?, dt_inicio = ?, "
+               + "dt_fim = ?, numero_vagas = ?, dt_limite_inscricao = ?, nome_responsavel = ?, "
+               + "cpf_responsavel = ?, email_responsavel = ? WHERE id = ?  AND dt_inicio > NOW()";
+
+    Connection conn = null;
+    PreparedStatement stm = null;
+
+   
+    try {
+        conn = ConnDao.conn();
+        stm = conn.prepareStatement(sql);
+
+       stm.setString(1, evento.getNome());
+            stm.setString(2, evento.getDescricao());
+            
+            //Para tratar com DateTime            
+            java.sql.Date data_inic = new java.sql.Date(evento.getDt_inicio().getTime());
+            java.sql.Date data_fim = new java.sql.Date(evento.getDt_fim().getTime());
+            
+            //para setar as datas
+            stm.setDate(3, data_inic);
+            stm.setDate(4, data_fim);
+                        
+            stm.setInt(5, evento.getNumero_vagas());
+            
+            //Para tratar com
+            java.sql.Date data_limite = new java.sql.Date(evento.getDt_limite_inscricao().getTime());
+            
+            stm.setDate(6, data_limite);
 
         stm.setString(7, evento.getNome_responsavel());
         stm.setString(8, evento.getCpf_responsavel());
@@ -278,8 +247,6 @@ public class EventoDAO {
 
         stm.setInt(10, id);
 
-        // Verifica se a data de alteração é válida antes de atualizar
-        if (!data_att.before(data_inic)) {
             int result = stm.executeUpdate();
 
             if (result == 1) {
@@ -288,9 +255,7 @@ public class EventoDAO {
             } else {
                 System.out.println("Erro ao alterar os valores.");
             }
-        } else {
-            System.out.println("A data de alteração não pode ser anterior à data de início do evento.");
-        }
+        
     } catch (SQLException e) {
         System.out.println("Ocorreu um erro: " + e.getMessage());
     } finally {
@@ -327,15 +292,15 @@ public class EventoDAO {
                 EventoModel evento = new EventoModel();
                 
                 evento.setNome(rs.getString("nome"));
-                evento.setDescricao_evento(rs.getString("descricao_evento"));
-                evento.setData_inic(rs.getTimestamp("data_inic"));
-                evento.setData_fim(rs.getTimestamp("data_fim"));
-                evento.setVagas_disp(rs.getInt("vagas_disp"));
-                evento.setData_limite(rs.getTimestamp("data_limite"));
-                evento.setNome_responsavel(rs.getString("nome_responsavel"));
-                evento.setCpf_responsavel(rs.getString("cpf_responsavel"));
-                evento.setEmail_responsavel(rs.getString("email_responsavel"));
-                
+            evento.setDescricao(rs.getString("descricao"));
+            evento.setDt_inicio(rs.getTimestamp("dt_inicio"));
+            evento.setDt_fim(rs.getTimestamp("dt_fim"));
+            evento.setNumero_vagas(rs.getInt("numero_vagas"));
+            evento.setDt_limite_inscricao(rs.getTimestamp("dt_limite_inscricao"));
+            evento.setNome_responsavel(rs.getString("nome_responsavel"));
+            evento.setCpf_responsavel(rs.getString("cpf_responsavel"));
+            evento.setEmail_responsavel(rs.getString("email_responsavel"));
+            
                 eventos.add(evento);
             }
         }catch(SQLException e){
@@ -343,5 +308,18 @@ public class EventoDAO {
     }          
     return eventos;
     }
-    
+    /*{
+    "nome": "Nome do Evento",
+    "descricao": "Descrição do evento",
+    "dt_inicio": "2024-11-25T00:00:00",
+    "dt_fim": "2024-11-30T00:00:00",
+    "numero_vagas": 100,
+    "dt_limite_inscricao": "2024-11-20T00:00:00",
+    "nome_responsavel": "Nome do Responsável",
+    "cpf_responsavel": "123.456.789-00",
+    "email_responsavel": "responsavel@dominio.com"
+  }
+
+*/
 }
+

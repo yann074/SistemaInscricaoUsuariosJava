@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.gestaodeprojeto.resources;
 
 import com.mycompany.gestaodeprojeto.Controller.InscricaoController;
@@ -32,13 +28,13 @@ public class InscritosResource {
     @Path("{id_evento}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-     public Response inscreverUsuario(InscricaoModel inscritos, @PathParam("id_evento") int id_evento, Timestamp data_atl) {
-          boolean sucesso = inscricaoController.salvarInscricao(inscritos, id_evento, data_atl);
+     public Response inscreverUsuario(InscricaoModel inscritos, @PathParam("id_evento") int id_evento) {
+          boolean sucesso = inscricaoController.salvarInscricao(inscritos, id_evento);
         
         if (sucesso) {
-            return Response.status(Response.Status.CREATED).entity("Inscrição realizada com sucesso!").build();
+            return Response.status(Response.Status.CREATED).entity("{\"msg\":\"Inscricao realizada com sucesso! Vamos estudar!.\"}").build();
         } else {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Erro ao realizar a inscrição.").build();
+            return Response.status(Response.Status.BAD_REQUEST).entity("{\"msg\":\"Erro ao realizar a inscrição.\"}").build();
         }
      }   
      
@@ -59,7 +55,7 @@ public class InscritosResource {
         }
         return Response
                 .status(Response.Status.NOT_FOUND)
-                .entity("Erro ao deletar o evento ou evento não encontrado")
+                .entity("{\"msg\":\"Erro ao deletar o evento ou evento não encontrado\"}")
                 .build();
     }
     
@@ -70,10 +66,11 @@ public class InscritosResource {
     @Path("{id_evento}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response obterUsuariosNoEvento(@PathParam("id_evento") int id_evento) {
-        List<UsuarioModel> inscricaoEvento = inscricaoController.listarInscritosNoEvento(id_evento) ;
+        List<UsuarioModel> inscricaoEvento = inscricaoController.listarInscritosNoEvento(id_evento);
+        
         if (inscricaoEvento.isEmpty()) {
             return Response.status(Response.Status.NOT_FOUND)
-                           .entity("Nenhum usuário encontrado.")
+                           .entity("{\"msg\":\"Nenhum usuário encontrado.\"}")
                            .build();
         }
         return Response.ok(inscricaoEvento).build();

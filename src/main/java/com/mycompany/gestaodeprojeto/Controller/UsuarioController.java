@@ -65,6 +65,10 @@ public static Claims parseToken(String token) throws Exception {
         this.UsuarioDao = new UsuarioDAO();
     }
     
+    
+    public boolean UsuarioIsAdm(String cpf){
+        return UsuarioDao.usuarioIsAdm(cpf);
+    }
     public boolean SalvarUsuario(UsuarioModel usuario){
         if(UsuarioDao.VerificarCPFEEmail(usuario)){
             return UsuarioDao.salvarUsuario(usuario);
@@ -83,9 +87,16 @@ public static Claims parseToken(String token) throws Exception {
       return UsuarioDao.atualizarUsuario( usuario, cpf);
    }
     
-    public boolean removerUsuario(String cpf){
-        return UsuarioDao.removerUsuario(cpf);
+public boolean removerUsuario(String cpf){
+    boolean isAdm = UsuarioDao.usuarioIsAdm(cpf);
+
+    if (!isAdm) {
+        return false;  // Impede a remoção se não for admin
+    }
+
+    return UsuarioDao.removerUsuario(cpf);
 }
+
     
  public String loginUsuario(UsuarioModel usuario) throws Exception {
     // Valida as credenciais do usuário chamando o método DAO

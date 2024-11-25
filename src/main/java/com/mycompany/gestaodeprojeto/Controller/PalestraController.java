@@ -2,6 +2,7 @@ package com.mycompany.gestaodeprojeto.Controller;
 
 import com.mycompany.gestaodeprojeto.DAO.PalestraDAO;
 import com.mycompany.gestaodeprojeto.Models.PalestraModel;
+import java.util.Date;
 import java.util.List;
 
 public class PalestraController {
@@ -33,11 +34,11 @@ public class PalestraController {
         return palestraDAO.removerPalestra(id);
     }
 
-    public boolean atualizarPalestra(PalestraModel palestra, int id) {
+    public boolean atualizarPalestra(PalestraModel palestra, int id, Date data_alt) {
         if (palestra == null || id <= 0) {
             System.out.println("Palestra ou ID inválido");
             return false;
         }
-        return palestraDAO.atualizarPalestra(palestra, id);
+        return palestraDAO.atualizarPalestra(palestra, id, data_alt);
     }
 }

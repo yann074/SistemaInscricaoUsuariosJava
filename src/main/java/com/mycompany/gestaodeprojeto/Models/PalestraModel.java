@@ -4,6 +4,7 @@
  */
 package com.mycompany.gestaodeprojeto.Models;
 
+import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -14,19 +15,27 @@ import java.util.Date;
 public class PalestraModel {
     
     private int id;
-    private String nomePalestra;
-    private String descricaoPalestra;
-    private Date dataInicioPalestra;
-    private Date dataFimPalestra;
-    private String vagasDisp;
-    private Date dataLimite;
+    private String nome;
+    private String descricao;
+    private Date dt_palestra;
+    private Time horario_fim_palestra;
+    private String nome_palestrante;
+    private String minicurriculo_palestrante;
+    private Time horario_inicio_palestra;
+    private Date data_limite;
+    private int id_evento;
+
+    public int getId_evento() {
+        return id_evento;
+    }
+
+    public void setId_evento(int id_evento) {
+        this.id_evento = id_evento;
+    }
 
     public PalestraModel() {
     }
 
-    
-
-    // Getters e Setters
     public int getId() {
         return id;
     }
@@ -35,51 +44,69 @@ public class PalestraModel {
         this.id = id;
     }
 
-    public String getNomePalestra() {
-        return nomePalestra;
+    public String getNome() {
+        return nome;
     }
 
-    public void setNomePalestra(String nomePalestra) {
-        this.nomePalestra = nomePalestra;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
-    public String getDescricaoPalestra() {
-        return descricaoPalestra;
+    public String getDescricao() {
+        return descricao;
     }
 
-    public void setDescricaoPalestra(String descricaoPalestra) {
-        this.descricaoPalestra = descricaoPalestra;
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
     }
 
-    public Date getDataInicioPalestra() {
-        return dataInicioPalestra;
+    public Date getDt_palestra() {
+        return dt_palestra;
     }
 
-    public void setDataInicioPalestra(Date dataInicioPalestra) {
-        this.dataInicioPalestra = dataInicioPalestra;
+    public void setDt_palestra(Date dt_palestra) {
+        this.dt_palestra = dt_palestra;
     }
 
-    public Date getDataFimPalestra() {
-        return dataFimPalestra;
+    public Time getHorario_fim_palestra() {
+        return horario_fim_palestra;
     }
 
-    public void setDataFimPalestra(Date dataFimPalestra) {
-        this.dataFimPalestra = dataFimPalestra;
+    public void setHorario_fim_palestra(Time horario_fim_palestra) {
+        this.horario_fim_palestra = horario_fim_palestra;
     }
 
-    public String getVagasDisp() {
-        return vagasDisp;
+    public Time getHorario_inicio_palestra() {
+        return horario_inicio_palestra;
     }
 
-    public void setVagasDisp(String vagasDisp) {
-        this.vagasDisp = vagasDisp;
+    public void setHorario_inicio_palestra(Time horario_inicio_palestra) {
+        this.horario_inicio_palestra = horario_inicio_palestra;
     }
 
-    public Date getDataLimite() {
-        return dataLimite;
+    public String getNome_palestrante() {
+        return nome_palestrante;
     }
 
-    public void setDataLimite(Date dataLimite) {
-        this.dataLimite = dataLimite;
+    public void setNome_palestrante(String nome_palestrante) {
+        this.nome_palestrante = nome_palestrante;
     }
+
+    public String getMinicurriculo_palestrante() {
+        return minicurriculo_palestrante;
+    }
+
+    public void setMinicurriculo_palestrante(String minicurriculo_palestrante) {
+        this.minicurriculo_palestrante = minicurriculo_palestrante;
+    }
+
+    public Date getData_limite() {
+        return data_limite;
+    }
+
+    public void setData_limite(Date data_limite) {
+        this.data_limite = data_limite;
+    }
+
+    
 }

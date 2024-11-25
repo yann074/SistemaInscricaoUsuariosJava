@@ -37,9 +37,9 @@ public class InscricaoMiniCursoResource {
           boolean sucesso = inscricaoMiniCursoController.salvarInscricao(inscritoMiniCurso, id_miniCurso, id_evento);
         
         if (sucesso) {
-            return Response.status(Response.Status.CREATED).entity("Inscrição realizada com sucesso!").build();
+            return Response.status(Response.Status.CREATED).entity("{\"msg\":\"Inscrito com sucesso\"}").build();
         } else {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Erro ao realizar a inscrição.").build();
+            return Response.status(Response.Status.BAD_REQUEST).entity("{\"msg\":\"Ocorreu um erro, tente novamente.\"}").build();
         }
      }   
      
@@ -52,12 +52,12 @@ public class InscricaoMiniCursoResource {
         
         if (removido) {
             return Response
-                    .ok("deletado com sucesso")
+                    .ok("{\"msg\":\"Deletado com sucesso\"}")
                     .build();
         }
         return Response
                 .status(Response.Status.NOT_FOUND)
-                .entity("Erro ao deletar o evento ou evento não encontrado")
+                .entity("{\"msg\":\"Erro ao deletar o evento ou evento não encontrado\"}")
                 .build();
     }
     
@@ -69,7 +69,7 @@ public class InscricaoMiniCursoResource {
         List<UsuarioModel> inscricaoModel = inscricaoMiniCursoController.listarInscritosNoMiniCurso(id_minicurso) ;
         if (inscricaoModel.isEmpty()) {
             return Response.status(Response.Status.NOT_FOUND)
-                           .entity("Nenhum usuário encontrado.")
+                           .entity("{\"msg\":\"Nenhum usuario encontrado\"}")
                            .build();
         }
         return Response.ok(inscricaoModel).build();

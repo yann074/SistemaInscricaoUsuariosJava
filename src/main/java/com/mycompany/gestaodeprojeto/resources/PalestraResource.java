@@ -13,6 +13,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -34,12 +35,14 @@ public class PalestraResource {
         if(salvar){
             return Response
                     .status(Response.Status.CREATED)
-                    .entity("Palestra salva com sucesso")
+                    .entity("{\"msg\":\"Palestra salva com sucesso\"}")
                     .build();
         }
+
+        // Retorno de erro com formato JSON específico para status 500
         return Response
                 .status(Response.Status.INTERNAL_SERVER_ERROR)
-                .entity("Ocorreu um erro ao salvar a palestra")
+                .entity("{\"msg\":\"Ocorreu um erro ao salvar a palestra\"}")
                 .build();
     }
     
@@ -52,7 +55,7 @@ public class PalestraResource {
         if(palestras.isEmpty()){
             return Response
                     .status(Response.Status.NOT_FOUND)
-                    .entity("Nenhuma palestra encontrada")
+                    .entity("{\"msg\":\"Nenhuma palestra encontrada\"}")
                     .build();
         }
         
@@ -71,12 +74,13 @@ public class PalestraResource {
         if(removido){
             return Response
                     .status(Response.Status.OK)
-                    .entity("Palestra removida com sucesso!")
+                    .entity("{\"msg\":\"Palestra removida com sucesso\"}")
                     .build();
         }
+
         return Response
                 .status(Response.Status.INTERNAL_SERVER_ERROR)
-                .entity("Erro ao remover a palestra")
+                .entity("{\"msg\":\"Erro ao remover a palestra, ou evento iniciado\"}")
                 .build();
     }
     
@@ -84,18 +88,20 @@ public class PalestraResource {
     @Autorizar
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("{id}")
-    public Response atualizarPalestra(@PathParam("id") int id, PalestraModel palestra){
-        boolean atualizado = palestraController.atualizarPalestra(palestra, id);
+    public Response atualizarPalestra(@PathParam("id") int id, PalestraModel palestra, Date data_alt){
+        boolean atualizado = palestraController.atualizarPalestra(palestra, id, data_alt);
         
         if(atualizado){
             return Response
                     .status(Response.Status.OK)
-                    .entity("Palestra com ID " + id + " atualizada com sucesso")
+                    .entity("{\"msg\":\"Palestra atualizada com sucesso\"}")
                     .build();
         }
+
+        // Retorno de erro com formato JSON específico para status 400
         return Response
                 .status(Response.Status.BAD_REQUEST)
-                .entity("Erro ao atualizar a palestra. Verifique os dados.")
+                .entity("{\"msg\":\"Erro ao atualizar a palestra. Verifique os dados.\"}")
                 .build();
     }
 }

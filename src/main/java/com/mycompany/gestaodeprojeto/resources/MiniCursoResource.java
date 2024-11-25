@@ -14,6 +14,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 @Path("minicurso")
@@ -30,13 +31,14 @@ public class MiniCursoResource {
         if (salvar) {
             return Response
                     .status(Response.Status.CREATED)
-                    .entity("MiniCurso salvo com sucesso")
+                    .entity("{\"msg\":\"Mini Curso criado com sucesso\"}")
                     .build();
         }
 
+        // Retorno de erro com formato específico
         return Response
                 .status(Response.Status.INTERNAL_SERVER_ERROR)
-                .entity("Ocorreu um erro ao salvar o MiniCurso")
+                .entity("{\"msg\":\"Ocorreu um erro ao salvar o MiniCurso\"}")
                 .build();
     }
 
@@ -69,33 +71,36 @@ public class MiniCursoResource {
         if (removido) {
             return Response
                     .status(Response.Status.OK)
-                    .entity("{\"mensagem\":\"MiniCurso removido com sucesso!\"}")
+                    .entity("{\"msg\":\"MiniCurso removido com sucesso!\"}")
                     .build();
         }
 
+        // Retorno de erro com formato específico
         return Response
                 .status(Response.Status.NOT_FOUND)
-                .entity("{\"mensagem\":\"MiniCurso não encontrado ou erro ao remover.\"}")
+                .entity("{\"msg\":\"MiniCurso não encontrado ou erro ao remover.\"}")
                 .build();
     }
+
     //deu bom
     @PUT
     @Autorizar
     @Path("{id}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response atualizarMiniCurso(@PathParam("id") int id, MiniCursoModel minicurso) {
-        boolean atualizado = minicursoController.atualizarMiniCurso(minicurso, id);
+    public Response atualizarMiniCurso(@PathParam("id") int id, MiniCursoModel minicurso, Date data_alt) {
+        boolean atualizado = minicursoController.atualizarMiniCurso(minicurso, id, data_alt);
 
         if (atualizado) {
             return Response
                     .status(Response.Status.OK)
-                    .entity("{\"mensagem\":\"MiniCurso atualizado com sucesso!\"}")
+                    .entity("{\"msg\":\"MiniCurso atualizado com sucesso!\"}")
                     .build();
         }
 
+        // Retorno de erro com formato específico
         return Response
                 .status(Response.Status.BAD_REQUEST)
-                .entity("{\"mensagem\":\"Erro ao atualizar o MiniCurso. Verifique os dados.\"}")
+                .entity("{\"msg\":\"Erro ao atualizar o MiniCurso. Verifique os dados.\"}")
                 .build();
     }
 }

@@ -13,28 +13,16 @@ import java.util.List;
 
 public class InscricaoDAO {
     //TESTAR
-    public boolean salvarInscricao(InscricaoModel inscritos, int id_evento, Timestamp data_atl){
+    public boolean salvarInscricao(InscricaoModel inscritos, int id_evento){
         String sql = "INSERT INTO inscricao (cpf_usuario, id_evento, data_inscricao) VALUES (?, ?, ?)";
-        String sqldata = "SELECT data_inic FROM evento WHERE id = ?";
         
         Connection conn = null;
         PreparedStatement stm = null;
-        PreparedStatement stmselect = null;
-        ResultSet rs = null;
         
         try {
             conn = ConnDao.conn();
-            stm = conn.prepareStatement(sql);
-            
-            stmselect = conn.prepareStatement(sqldata);
-            stmselect.setInt(1, id_evento);
-        
-            rs = stmselect.executeQuery();
-            
-            if(rs.next()){
-                 Timestamp data_inic = rs.getTimestamp("data_inic");    
+            stm = conn.prepareStatement(sql);  
                  
-                 if(data_atl.before(data_inic)){
                       
                 stm.setString(1, inscritos.getCpf_usuario());
                 stm.setInt(2, id_evento);
@@ -49,10 +37,6 @@ public class InscricaoDAO {
                     if (resultado == 1) {
                         System.out.println("Inscrição realizada com sucesso!");
                     }
-
-                 }
-            }
-           
        
             return true;
         } catch (SQLException e) {

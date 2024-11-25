@@ -13,14 +13,73 @@ import java.util.Date;
 public class EventoModel {
     private int id;
     public String nome;
-    public String descricao_evento;
-    public Date data_inic;
-    public Date data_fim;
-    public int vagas_disp;
-    public Date data_limite;
+    public String descricao;
+    public Date dt_inicio;
+    public Date dt_fim;
+    public int numero_vagas;
+    public Date dt_limite_inscricao;
     public String nome_responsavel;
     public String cpf_responsavel;
     public String email_responsavel;
+
+    public EventoModel() {
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public Date getDt_inicio() {
+        return dt_inicio;
+    }
+
+    public void setDt_inicio(Date dt_inicio) {
+        this.dt_inicio = dt_inicio;
+    }
+
+    public Date getDt_fim() {
+        return dt_fim;
+    }
+
+    public void setDt_fim(Date dt_fim) {
+        this.dt_fim = dt_fim;
+    }
+
+    public int getNumero_vagas() {
+        return numero_vagas;
+    }
+
+    public void setNumero_vagas(int numero_vagas) {
+        this.numero_vagas = numero_vagas;
+    }
+
+    public Date getDt_limite_inscricao() {
+        return dt_limite_inscricao;
+    }
+
+    public void setDt_limite_inscricao(Date dt_limite_inscricao) {
+        this.dt_limite_inscricao = dt_limite_inscricao;
+    }
 
     public String getNome_responsavel() {
         return nome_responsavel;
@@ -45,62 +104,7 @@ public class EventoModel {
     public void setEmail_responsavel(String email_responsavel) {
         this.email_responsavel = email_responsavel;
     }
-    
-    //usar id
 
-    public int getId() {
-        return id;
-    }
 
-    public void setId(int id) {
-        this.id = id;
-    }
 
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getDescricao_evento() {
-        return descricao_evento;
-    }
-
-    public void setDescricao_evento(String desc_evento) {
-        this.descricao_evento = desc_evento;
-    }
-
-    public Date getData_inic() {
-        return data_inic;
-    }
-
-    public void setData_inic(Date data_inic) {
-        this.data_inic = data_inic;
-    }
-
-    public Date getData_fim() {
-        return data_fim;
-    }
-
-    public void setData_fim(Date data_fim) {
-        this.data_fim = data_fim;
-    }
-
-    public int getVagas_disp() {
-        return vagas_disp;
-    }
-
-    public void setVagas_disp(int vagas_disp) {
-        this.vagas_disp = vagas_disp;
-    }
-
-    public Date getData_limite() {
-        return data_limite;
-    }
-
-    public void setData_limite(Date data_limite) {
-        this.data_limite = data_limite;
-    }
 }

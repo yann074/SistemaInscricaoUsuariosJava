@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -17,49 +18,63 @@ import java.util.List;
  * @author yanns
  */
 public class PalestraDAO {
+    //Com o Json do Senhor deu erro com data, vou deixar um json no final desse codigo
     
-    
-        //falta inserir nome do palestrante e minicursopalestrante
-    public boolean salvarPalestra(PalestraModel palestra){
-        String sql = "INSERT INTO palestra (nome_palestra, descricao_palestra, data_inicio_palestra, data_fim_palestra, vagas_disp, data_limite) VALUES (?,?,?,?,?,?)";
-        
-        Connection conn = null;
-        PreparedStatement stm = null;
-        
-        try{
-            conn = ConnDao.conn();
-            stm = conn.prepareStatement(sql);
-            
-            stm.setString(1, palestra.getNomePalestra());
-            stm.setString(2, palestra.getDescricaoPalestra());  
-            
-            //Para tratar com DateTime            
-            java.sql.Date data_inic = new java.sql.Date(palestra.getDataInicioPalestra().getTime());
-            java.sql.Date data_fim = new java.sql.Date(palestra.getDataFimPalestra().getTime());
-            
-            //para setar as datas
-            stm.setDate(3, data_inic);
-            stm.setDate(4, data_fim);
-            
-            stm.setString(5, palestra.getVagasDisp());
-            
-            java.sql.Date data_limite = new java.sql.Date(palestra.getDataLimite().getTime());
-            
-            stm.setDate(6, data_limite);
-            
-            int resultado = stm.executeUpdate();
-            
-            if(resultado == 1){
-                System.out.println("Deu bom");
-            }
-            
+   public boolean salvarPalestra(PalestraModel palestra) {
+    String sql = "INSERT INTO palestra (nome, descricao, dt_palestra, horario_inicio_palestra, horario_fim_palestra, " +
+                 "nome_palestrante, minicurriculo_palestrante, data_limite,  id_evento) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+    Connection conn = null;
+    PreparedStatement stm = null;
+
+    try {
+        conn = ConnDao.conn(); // Obtem a conexão
+        stm = conn.prepareStatement(sql);
+
+        // Configurando os parâmetros
+        stm.setString(1, palestra.getNome()); // Nome da palestra
+        stm.setString(2, palestra.getDescricao()); // Descrição da palestra
+
+        // Para `dt_palestra` (Date)
+        java.sql.Date dtPalestra = new java.sql.Date(palestra.getDt_palestra().getTime());
+        stm.setDate(3, dtPalestra);
+
+        // Para horários de início e fim (Time)
+        stm.setTime(4, palestra.getHorario_inicio_palestra());
+        stm.setTime(5, palestra.getHorario_fim_palestra());
+
+        // Nome do palestrante e minicurrículo
+        stm.setString(6, palestra.getNome_palestrante());
+        stm.setString(7, palestra.getMinicurriculo_palestrante());
+
+        // Data limite (Date)
+        java.sql.Date dataLimite = new java.sql.Date(palestra.getData_limite().getTime());
+        stm.setDate(8, dataLimite);
+        stm.setInt(9, palestra.getId_evento());
+
+        // Executando o comando
+        int resultado = stm.executeUpdate();
+
+        if (resultado == 1) {
+            System.out.println("Palestra salva com sucesso.");
             return true;
-        }catch(SQLException e){
-            System.out.println("error " + e.getMessage());
         }
-        
-        return false;
+
+    } catch (SQLException e) {
+        System.err.println("Erro ao salvar palestra: " + e.getMessage());
+    } finally {
+        // Fechando recursos
+        try {
+            if (stm != null) stm.close();
+            if (conn != null) conn.close();
+        } catch (SQLException e) {
+            System.err.println("Erro ao fechar recursos: " + e.getMessage());
+        }
     }
+
+    return false;
+}
+
     
     public List<PalestraModel> listarPalestra(){
         String sql = "SELECT * FROM palestra";
@@ -78,10 +93,11 @@ public class PalestraDAO {
             while(rs.next()){
                 PalestraModel palestra = new PalestraModel();
                 
-                palestra.setNomePalestra(rs.getString("nome_palestra"));
-                palestra.setDescricaoPalestra(rs.getString("descricao_palestra"));
-                palestra.setDataInicioPalestra(rs.getTimestamp("data_inicio_palestra"));
-                palestra.setDataFimPalestra(rs.getTimestamp("data_fim_palestra"));
+                palestra.setNome(rs.getString("nome"));
+                palestra.setDescricao(rs.getString("descricao"));
+                palestra.setDt_palestra(rs.getTimestamp("dt_palestra"));
+                palestra.setHorario_inicio_palestra(rs.getTime("horario_inicio_palestra"));
+                palestra.setHorario_fim_palestra(rs.getTime("horario_fim_palestra"));
                 
                 palestras.add(palestra);
             }
@@ -91,9 +107,12 @@ public class PalestraDAO {
     return palestras;
     }
     
-
-   public boolean removerPalestra(int id) {
-    String sqlSelect = "SELECT id FROM palestra WHERE id = ?";
+    
+    //ajuda eu tive
+    public boolean removerPalestra(int id) {
+    String sqlSelect = "SELECT p.id, e.dt_inicio FROM palestra p " +
+                       "JOIN evento e ON p.id_evento = e.id " +
+                       "WHERE p.id = ?";
     String sqlDelete = "DELETE FROM palestra WHERE id = ?";
     
     Connection conn = null;
@@ -104,12 +123,22 @@ public class PalestraDAO {
         // Estabelecer conexão
         conn = ConnDao.conn();
 
-        // Verificar se a palestra existe
+        // Verificar se a palestra existe e obter a data de início do evento
         stm = conn.prepareStatement(sqlSelect);
         stm.setInt(1, id);
         rs = stm.executeQuery();
 
         if (rs.next()) {
+            // Obter a data de início do evento
+            Date dataInicio = rs.getDate("dt_inicio");
+            Date dataAtual = new Date(System.currentTimeMillis());
+
+            // Verificar se o evento já começou
+            if (dataInicio.before(dataAtual)) {
+                System.out.println("Não é possível remover a palestra. O evento já começou.");
+                return false;
+            }
+
             // Excluir palestra
             stm = conn.prepareStatement(sqlDelete);
             stm.setInt(1, id);
@@ -130,50 +159,96 @@ public class PalestraDAO {
     return false;
 }
 
-    public boolean atualizarPalestra(PalestraModel palestra, int id){
-        String sql = "UPDATE palestra SET nome_palestra = ?, descricao_palestra = ?, data_inicio_palestra = ?, "
-                     + " data_fim_palestra = ?, vagas_disp = ?, data_limite = ?  WHERE id = ?";
-        
-        Connection conn = null;
-        PreparedStatement stm = null;
-        
-        try{
-            conn = ConnDao.conn();
-            stm = conn.prepareStatement(sql);
-            
-            stm.setString(1, palestra.getNomePalestra());
-            stm.setString(2, palestra.getDescricaoPalestra());  
-            
-            //Para tratar com DateTime            
-            java.sql.Date data_inic = new java.sql.Date(palestra.getDataInicioPalestra().getTime());
-            java.sql.Date data_fim = new java.sql.Date(palestra.getDataFimPalestra().getTime());
-            
-            //para setar as datas
-            stm.setDate(3, data_inic);
-            stm.setDate(4, data_fim);
-            
-            stm.setString(5, palestra.getVagasDisp());
-            
-            java.sql.Date data_limite = new java.sql.Date(palestra.getDataLimite().getTime());
-            
-            stm.setDate(6, data_limite);
-            
-            stm.setInt(7, id);
-            
-            int resultado = stm.executeUpdate();
-            
-            if(resultado == 1){
-                System.out.println("Valores alterados com sucesso");
-                return true;
-            }else if(resultado == 0){
-                System.out.println("Algo deu errado");
+
+   public boolean atualizarPalestra(PalestraModel palestra, int id, Date data_alt) {
+    // SQL para verificar a data de início do evento associado à palestra
+    String sqlSelect = "SELECT e.dt_inicio FROM palestra p " +
+                       "JOIN evento e ON p.id_evento = e.id " +
+                       "WHERE p.id = ?";
+
+    // SQL de atualização da palestra
+    String sqlUpdate = "UPDATE palestra SET nome = ?, descricao = ?, dt_palestra = ?, " +
+                       "horario_fim_palestra = ?, nome_palestrante = ?, minicurriculo_palestrante = ?, " +
+                       "horario_inicio_palestra = ?, data_limite = ? WHERE id = ?";
+
+    Connection conn = null;
+    PreparedStatement stm = null;
+    ResultSet rs = null;
+
+    try {
+        // Estabelecer conexão
+        conn = ConnDao.conn();
+
+        // Verificar a data de início do evento associado à palestra
+        stm = conn.prepareStatement(sqlSelect);
+        stm.setInt(1, id);
+        rs = stm.executeQuery();
+
+        if (rs.next()) {
+            // Obter a data de início do evento
+            Date dataInicioEvento = rs.getTimestamp("dt_inicio");
+
+            // Verificar se a data de alteração (data_alt) é anterior à data de início do evento
+            if (data_alt.before(dataInicioEvento)) {
+                // Preparar a consulta de atualização
+                stm = conn.prepareStatement(sqlUpdate);
+
+                // Configurar os parâmetros da consulta de atualização
+                stm.setString(1, palestra.getNome()); // Nome da palestra
+                stm.setString(2, palestra.getDescricao()); // Descrição da palestra
+
+                // Para `dt_palestra` (Date)
+                java.sql.Date dtPalestra = new java.sql.Date(palestra.getDt_palestra().getTime());
+                stm.setDate(3, dtPalestra);
+
+                // Para horários de início e fim (Time)
+                stm.setTime(4, palestra.getHorario_inicio_palestra());
+                stm.setTime(5, palestra.getHorario_fim_palestra());
+
+                // Nome do palestrante e minicurrículo
+                stm.setString(6, palestra.getNome_palestrante());
+                stm.setString(7, palestra.getMinicurriculo_palestrante());
+
+                // Data limite (Date)
+                java.sql.Date dataLimite = new java.sql.Date(palestra.getData_limite().getTime());
+                stm.setDate(8, dataLimite);
+
+                // Configurar o ID para a atualização
+                stm.setInt(9, id);
+
+                // Executar a atualização
+                int resultado = stm.executeUpdate();
+
+                if (resultado == 1) {
+                    System.out.println("Valores alterados com sucesso");
+                    return true;
+                } else {
+                    System.out.println("Algo deu errado, nenhuma linha foi atualizada");
+                }
+            } else {
+                System.out.println("Não é possível atualizar a palestra. O evento já começou.");
             }
-            
-        }catch(SQLException e){
-            System.out.println("Ocorreu um error" + e);
+        } else {
+            System.out.println("Palestra não encontrada");
         }
-        return false;
+    } catch (SQLException e) {
+        System.out.println("Erro ao atualizar palestra: " + e.getMessage());
     }
-    
+    return false;
+}
+
+    /*{
+  "nome": "Palestra sobre Inteligência Artificial",
+  "descricao": "Uma introdução ao mundo da Inteligência Artificial e suas aplicações no cotidiano.",
+  "dt_palestra": "2024-12-15", 
+  "horario_inicio_palestra": "09:00:00",
+  "horario_fim_palestra": "12:00:00",
+  "nome_palestrante": "Dr. João Silva",
+  "minicurriculo_palestrante": "Dr. João Silva é PhD em Inteligência Artificial pela Universidade X e atua no desenvolvimento de soluções de IA há mais de 10 anos.",
+  "data_limite": "2024-12-10",
+    "id_evento": "9"
+}
+
+    */
     
 }

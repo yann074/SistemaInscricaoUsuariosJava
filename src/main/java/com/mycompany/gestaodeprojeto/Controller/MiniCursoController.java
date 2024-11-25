@@ -3,6 +3,7 @@ package com.mycompany.gestaodeprojeto.Controller;
 import com.mycompany.gestaodeprojeto.DAO.MiniCursoDAO;
 import com.mycompany.gestaodeprojeto.Models.MiniCursoModel;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 public class MiniCursoController {
@@ -34,9 +35,9 @@ public class MiniCursoController {
         }
     }
 
-    public boolean atualizarMiniCurso(MiniCursoModel miniCurso, int id) {
+    public boolean atualizarMiniCurso(MiniCursoModel miniCurso, int id, Date data_alt) {
         if (miniCurso != null && id > 0) {
-            return miniCursoDAO.atualizarMiniCurso(miniCurso, id);
+            return miniCursoDAO.atualizarMiniCurso(miniCurso, id, data_alt);
         } else {
             System.out.println("Dados inválidos para atualização");
             return false;

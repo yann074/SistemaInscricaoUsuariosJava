@@ -13,7 +13,6 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -21,7 +20,7 @@ import java.util.List;
 public class EventoResource {
     private EventoController eventoController = new EventoController();
 
-    //ta salvando
+    // Salvar evento
     @POST
     @Autorizar
     @Consumes(MediaType.APPLICATION_JSON)
@@ -31,28 +30,36 @@ public class EventoResource {
         if (salvar) {
             return Response
                     .status(Response.Status.CREATED)
-                    .entity("Evento salvo com sucesso")
+                    .entity("{\"msg\":\"Evento salvo com sucesso\"}")
                     .build();
         }
         return Response
                 .status(Response.Status.BAD_REQUEST)
-                .entity("Ocorreu um erro ao salvar o evento")
+                .entity("{\"msg\":\"Ocorreu um erro ao salvar o evento\"}")
                 .build();
     }
 
-    //Gera com um filtro de Datas
+    // Listar eventos com filtro de datas
     @GET
     @Autorizar
     @Path("{dataInicio}/{dataFim}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response obterEventos(@PathParam("dataInicio") String dataInicio,@PathParam("dataFim") String dataFim) {
-        List<EventoModel> eventos = eventoController.listarEventos( dataInicio,  dataFim);
+    public Response obterEventos(@PathParam("dataInicio") String dataInicio, @PathParam("dataFim") String dataFim) {
+        List<EventoModel> eventos = eventoController.listarEventos(dataInicio, dataFim);
+
+        if (eventos.isEmpty()) {
+            return Response
+                    .status(Response.Status.NOT_FOUND)
+                    .entity("{\"msg\":\"Nenhum evento encontrado.\"}")
+                    .build();
+        }
+
         return Response
                 .ok(eventos)
                 .build();
     }
-    
-    //deu certo
+
+    // Obter programação do evento
     @GET
     @Autorizar
     @Produces(MediaType.APPLICATION_JSON)
@@ -63,7 +70,7 @@ public class EventoResource {
         if (evento == null || evento.isEmpty()) {
             return Response
                     .status(Response.Status.NOT_FOUND)
-                    .entity("Evento não encontrado")
+                    .entity("{\"msg\":\"Evento não encontrado\"}")
                     .build();
         }
 
@@ -72,7 +79,26 @@ public class EventoResource {
                 .build();
     }
 
-    //RODA
+    @GET
+    @Autorizar
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/programacao/evento/{id}")
+    public Response listarEventoComPalestraEMiniCurso(@PathParam("id") int id) {
+        List<EventoModel> evento = eventoController.listarEventoComPalestraEMiniCurso(id);
+        
+        if (evento == null || evento.isEmpty()) {
+            return Response
+                    .status(Response.Status.NOT_FOUND)
+                    .entity("{\"msg\":\"Evento não encontrado\"}")
+                    .build();
+        }
+
+        return Response
+                .ok(evento)
+                .build();
+    }
+    
+    // Remover evento
     @DELETE
     @Autorizar
     @Produces(MediaType.APPLICATION_JSON)
@@ -82,33 +108,32 @@ public class EventoResource {
         
         if (removido) {
             return Response
-                    .ok("deletado com sucesso")
+                    .ok("{\"msg\":\"Evento deletado com sucesso\"}")
                     .build();
         }
         return Response
                 .status(Response.Status.NOT_FOUND)
-                .entity("Erro ao deletar o evento ou evento não encontrado")
+                .entity("{\"msg\":\"Erro ao deletar o evento ou há participantes no evento, ou há palestras/miniCursos iniciados\"}")
                 .build();
     }
 
-    
-    //TESTAR
+    // Atualizar evento
     @PUT
     @Autorizar
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("{id}")
-    public Response atualizarEvento(@PathParam("id") int id, EventoModel evento, Timestamp data_alt) {
-        boolean atualizado = eventoController.atualizarEvento(evento, id, data_alt);
+    public Response atualizarEvento(@PathParam("id") int id, EventoModel evento) {
+        boolean atualizado = eventoController.atualizarEvento(evento, id);
 
         if (atualizado) {
             return Response
                     .status(Response.Status.OK)
-                    .entity("Evento atualizado com sucesso")
+                    .entity("{\"msg\":\"Evento atualizado com sucesso\"}")
                     .build();
         }
         return Response
                 .status(Response.Status.BAD_REQUEST)
-                .entity("Erro ao atualizar o evento ou dados inválidos")
+                .entity("{\"msg\":\"Erro ao atualizar o evento ou dados inválidos\"}")
                 .build();
     }
 }
